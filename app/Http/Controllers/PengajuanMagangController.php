@@ -23,7 +23,7 @@ class PengajuanMagangController extends Controller
             'asal_instansi'   => 'required|string',
             'jurusan'         => 'required|string',
             'keahlian'        => 'required|string',
-            'lokasi_id'       => 'required|exists:lokasi_magang,id',
+            'lokasi_id'       => 'required|exists:lokasi,id',
             'mulai_magang'    => 'required|date',
             'selesai_magang'  => 'required|date|after_or_equal:mulai_magang',
         ]);

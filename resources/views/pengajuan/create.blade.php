@@ -28,6 +28,19 @@
         <h1 class="auth-title text-center">Form Pengajuan Magang</h1>
         <p class="auth-subtitle text-center mb-4">Isi data di bawah dengan lengkap dan benar.</p>
 
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('pengajuan.store') }}">
             @csrf
 
@@ -65,7 +78,7 @@
                 <label>Lokasi Magang</label>
                 <select name="lokasi_id" class="form-control" required>
                     @foreach($lokasi as $item)
-                        <option value="{{ $item->id }}">{{ $item->nama_lokasi }}</option>
+                        <option value="{{ $item->id }}">{{ $item->bidang }} - {{ $item->tim }}</option>
                     @endforeach
                 </select>
             </div>

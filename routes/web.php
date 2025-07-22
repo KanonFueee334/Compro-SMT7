@@ -101,3 +101,5 @@ Route::get('/', function () {
 Route::get('/pengajuan', [PengajuanMagangController::class, 'create'])->name('pengajuan.create');
 Route::post('/pengajuan', [PengajuanMagangController::class, 'store'])->name('pengajuan.store');
 Route::get('/pengajuan-magang', [PengajuanMagangController::class, 'create'])->name('pengajuan.create');
+Route::get('/pengajuan-penelitian', [App\Http\Controllers\PengajuanPenelitianController::class, 'create'])->name('pengajuan.penelitian.create');
+Route::post('/pengajuan-penelitian', [App\Http\Controllers\PengajuanPenelitianController::class, 'store'])->name('pengajuan.penelitian.store');

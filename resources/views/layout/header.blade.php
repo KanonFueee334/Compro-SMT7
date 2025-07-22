@@ -20,8 +20,9 @@
                                     <div class="user-menu d-flex">
                                         <div class="user-name text-end me-3">
                                             <?php 
-                                                $name = (Auth::user())->name;
-                                                $role = (Auth::user())->role;
+                                                $user = Auth::user();
+                                                $name = $user ? $user->name : 'Guest';
+                                                $role = $user ? $user->role : '-';
                                             ?>
                                             <h6 class="mb-0 text-gray-600">{{ $name }}</h6>
                                             <p class="mb-0 text-sm text-gray-600">{{ $role }}</p>
