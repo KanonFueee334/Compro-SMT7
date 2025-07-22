@@ -77,6 +77,7 @@
             <div class="form-group mb-3">
                 <label>Lokasi Magang</label>
                 <select name="lokasi_id" class="form-control" required>
+                    <option value="">-- Pilih Lokasi --</option>
                     @foreach($lokasi as $item)
                         <option value="{{ $item->id }}">{{ $item->bidang }} - {{ $item->tim }}</option>
                     @endforeach

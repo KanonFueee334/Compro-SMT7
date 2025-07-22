@@ -1,47 +1,20 @@
 @extends('layout.app')
-@section('title', 'Daftar Pengajuan Magang')
+@section('title', 'Daftar Penerimaan Magang')
 @section('content')
 <div class="container">
-    <h2>Daftar Pengajuan Magang</h2>
-    {{-- Card Kuota Lokasi --}}
-    <div class="row mb-4">
-        @foreach($kuota as $k)
-        <div class="col-md-3 mb-2">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h6 class="card-title mb-1">{{ $k['bidang'] }}<br><small>{{ $k['tim'] }}</small></h6>
-                    <span class="badge bg-primary">{{ $k['terisi'] }} / {{ $k['quota'] }} terisi</span>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-    {{-- Dropdown Filter Status --}}
-    <form method="get" class="mb-3">
-        <div class="row g-2 align-items-center">
-            <div class="col-auto">
-                <label for="status" class="col-form-label">Filter Status:</label>
-            </div>
-            <div class="col-auto">
-                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
-                    <option value="pengajuan" {{ $status=='pengajuan'?'selected':'' }}>Pengajuan</option>
-                    <option value="diproses" {{ $status=='diproses'?'selected':'' }}>Diproses</option>
-                    <option value="ditolak" {{ $status=='ditolak'?'selected':'' }}>Ditolak</option>
-                    <option value="all" {{ $status=='all'?'selected':'' }}>Semua</option>
-                </select>
-            </div>
-        </div>
-    </form>
-    {{-- Tabel Pengajuan --}}
+    <h2>Daftar Penerimaan Magang</h2>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nama Pemohon</th>
                 <th>No HP</th>
-                <th>Lokasi</th>
                 <th>Status</th>
-                <th>Tanggal Pengajuan</th>
+                <th>Catatan</th>
+                <th>File Surat</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -51,15 +24,28 @@
                 <td>{{ $p->id }}</td>
                 <td>{{ $p->nama_pemohon }}</td>
                 <td>{{ $p->no_hp }}</td>
-                <td>{{ optional($p->lokasi)->bidang ?? '-' }}<br><small>{{ optional($p->lokasi)->tim ?? '' }}</small></td>
                 <td>{{ ucfirst($p->status) }}</td>
-                <td>{{ $p->created_at }}</td>
+                <td>{{ $p->catatan }}</td>
                 <td>
+                    @if($p->file_surat)
+                        <a href="{{ asset('storage/'.$p->file_surat) }}" target="_blank">Lihat Surat</a>
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('admin.penerimaan.edit', $p->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <!-- Tombol aksi status -->
                     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalStatus{{ $p->id }}">Ubah Status</button>
+                    @if($p->status === 'ditolak')
+                    <form action="{{ route('admin.penerimaan.destroy', $p->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus pengajuan ini?')">Hapus</button>
+                    </form>
+                    @endif
                     <!-- Modal ubah status -->
                     <div class="modal fade" id="modalStatus{{ $p->id }}" tabindex="-1" aria-labelledby="modalStatusLabel{{ $p->id }}" aria-hidden="true">
                         <div class="modal-dialog">
-                            <form method="POST" action="{{ route('admin.penerimaan.ubah-status', $p->id) }}">
+                            <form method="POST" action="{{ route('admin.penerimaan.ubah-status', $p->id) }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -69,15 +55,19 @@
                                     <div class="modal-body">
                                         <div class="mb-2">
                                             <label>Status</label>
-                                            <select name="status" class="form-control" required onchange="toggleAlasan(this, {{ $p->id }})">
-                                                <option value="pengajuan">Pengajuan</option>
-                                                <option value="diproses">Diproses</option>
+                                            <select name="status" class="form-control" required onchange="toggleSuratCatatan(this, {{ $p->id }})">
+                                                <option value="diterima">Diterima</option>
+                                                <option value="direvisi">Direvisi</option>
                                                 <option value="ditolak">Ditolak</option>
                                             </select>
                                         </div>
-                                        <div class="mb-2" id="alasanField{{ $p->id }}" style="display:none;">
-                                            <label>Alasan Penolakan</label>
+                                        <div class="mb-2" id="catatanField{{ $p->id }}" style="display:none;">
+                                            <label>Catatan</label>
                                             <textarea name="catatan" class="form-control"></textarea>
+                                        </div>
+                                        <div class="mb-2" id="suratField{{ $p->id }}" style="display:none;">
+                                            <label>Upload Surat Keterangan</label>
+                                            <input type="file" name="file_surat" class="form-control">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -91,12 +81,15 @@
                 </td>
             </tr>
             <script>
-                function toggleAlasan(select, id) {
-                    let alasan = document.getElementById('alasanField'+id);
-                    if(select.value === 'ditolak') {
-                        alasan.style.display = 'block';
+                function toggleSuratCatatan(select, id) {
+                    let catatan = document.getElementById('catatanField'+id);
+                    let surat = document.getElementById('suratField'+id);
+                    if(select.value === 'diterima') {
+                        catatan.style.display = 'none';
+                        surat.style.display = 'block';
                     } else {
-                        alasan.style.display = 'none';
+                        catatan.style.display = 'block';
+                        surat.style.display = 'none';
                     }
                 }
             </script>

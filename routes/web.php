@@ -81,9 +81,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     Route::get('/pengajuan/link', [AdminController::class, 'pengajuanLink'])->name('pengajuan.link');
-    Route::get('/pengajuan/daftar', [AdminController::class, 'pengajuanDaftar'])->name('pengajuan.daftar');
+    Route::get('/pengajuan/daftar', [App\Http\Controllers\PengajuanMagangController::class, 'daftarPengajuan'])->name('pengajuan.daftar');
     Route::get('/penerimaan/link', [AdminController::class, 'penerimaanLink'])->name('penerimaan.link');
-    Route::get('/penerimaan/daftar', [AdminController::class, 'penerimaanDaftar'])->name('penerimaan.daftar');
+    Route::get('/penerimaan/daftar', [PengajuanMagangController::class, 'index'])->name('penerimaan.daftar');
+    Route::get('/penerimaan/{id}/edit', [PengajuanMagangController::class, 'edit'])->name('penerimaan.edit');
+    Route::put('/penerimaan/{id}', [PengajuanMagangController::class, 'update'])->name('penerimaan.update');
+    Route::post('/penerimaan/{id}/ubah-status', [PengajuanMagangController::class, 'ubahStatus'])->name('penerimaan.ubah-status');
+    Route::delete('/penerimaan/{id}', [PengajuanMagangController::class, 'destroy'])->name('penerimaan.destroy');
     Route::get('/pelaksanaan', [AdminController::class, 'pelaksanaan'])->name('pelaksanaan');
     Route::get('/hasil', [AdminController::class, 'hasil'])->name('hasil');
     Route::get('/penelitian/pengajuan', [AdminController::class, 'penelitianPengajuan'])->name('penelitian.pengajuan');

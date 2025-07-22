@@ -9,8 +9,7 @@ class PengajuanMagang extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengajuan_magang'; // pastikan sesuai dengan nama tabel kamu di database
-
+    protected $table = 'pengajuan_magang';
     protected $fillable = [
         'nama_pemohon',
         'no_hp',
@@ -21,11 +20,14 @@ class PengajuanMagang extends Model
         'lokasi_id',
         'mulai_magang',
         'selesai_magang',
+        'email',
+        'status',
+        'catatan',
+        'file_surat',
     ];
 
-    // (Opsional) relasi ke lokasi magang
     public function lokasi()
     {
-        return $this->belongsTo(LokasiMagang::class);
+        return $this->belongsTo(\App\Models\Lokasi::class, 'lokasi_id');
     }
 }
