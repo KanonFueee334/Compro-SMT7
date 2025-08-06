@@ -80,7 +80,7 @@
                                     <span>Pengajuan Magang</span>
                                 </a>
                                 <ul class="submenu">
-                                    <li class="submenu-item"><a href="{{ route('admin.pengajuan.link') }}">Link Pengajuan</a></li>
+                                    <li class="submenu-item"><a href="{{ route('admin.form_links.index') }}">Kelola Form Links</a></li>
                                     <li class="submenu-item"><a href="{{ route('admin.pengajuan.daftar') }}">Daftar Pengajuan</a></li>
                                 </ul>
                             </li>

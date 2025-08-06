@@ -26,10 +26,28 @@ class PengajuanMagangController extends Controller
     {
         $pengajuan = PengajuanMagang::findOrFail($id);
         $data = $request->all();
+        
+        // Process group members data if provided
+        if ($request->has('anggota_nama') && $request->has('anggota_hp')) {
+            $anggotaNama = $request->input('anggota_nama', []);
+            $anggotaHp = $request->input('anggota_hp', []);
+            
+            // Combine nama and hp into a structured format
+            $namaAnggota = [];
+            for ($i = 0; $i < count($anggotaNama); $i++) {
+                if (!empty($anggotaNama[$i]) && !empty($anggotaHp[$i])) {
+                    $namaAnggota[] = $anggotaNama[$i] . ' (HP: ' . $anggotaHp[$i] . ')';
+                }
+            }
+            
+            $data['nama_anggota'] = implode('; ', $namaAnggota);
+        }
+        
         // Handle file upload
         if ($request->hasFile('file_surat')) {
             $data['file_surat'] = $request->file('file_surat')->store('surat_penerimaan', 'public');
         }
+        
         $pengajuan->update($data);
         return redirect()->route('admin.penerimaan.daftar')->with('success', 'Data pengajuan berhasil diupdate.');
     }
@@ -74,7 +92,10 @@ class PengajuanMagangController extends Controller
         $request->validate([
             'nama_pemohon' => 'required|string|max:255',
             'no_hp' => 'required|string|max:20',
-            'nama_anggota' => 'required|string',
+            'anggota_nama' => 'required|array|min:1',
+            'anggota_nama.*' => 'required|string|max:255',
+            'anggota_hp' => 'required|array|min:1',
+            'anggota_hp.*' => 'required|string|max:20',
             'asal_instansi' => 'required|string',
             'jurusan' => 'required|string',
             'keahlian' => 'required|string',
@@ -82,8 +103,31 @@ class PengajuanMagangController extends Controller
             'mulai_magang' => 'required|date',
             'selesai_magang' => 'required|date|after_or_equal:mulai_magang',
         ]);
+
+        // Process group members data
+        $anggotaNama = $request->input('anggota_nama', []);
+        $anggotaHp = $request->input('anggota_hp', []);
+        
+        // Combine nama and hp into a structured format
+        $namaAnggota = [];
+        for ($i = 0; $i < count($anggotaNama); $i++) {
+            if (!empty($anggotaNama[$i]) && !empty($anggotaHp[$i])) {
+                $namaAnggota[] = $anggotaNama[$i] . ' (HP: ' . $anggotaHp[$i] . ')';
+            }
+        }
+        
         $data = $request->all();
         $data['status'] = 'pengajuan';
+        $data['nama_anggota'] = implode('; ', $namaAnggota);
+        
+        // If form_link_id is provided, validate it exists and is active
+        if ($request->has('form_link_id')) {
+            $formLink = \App\Models\FormLink::find($request->form_link_id);
+            if (!$formLink || !$formLink->isActive()) {
+                return redirect()->back()->withErrors(['form_link' => 'Form link tidak valid atau sudah tidak aktif.']);
+            }
+        }
+        
         PengajuanMagang::create($data);
         return redirect()->back()->with('success', 'Pengajuan magang berhasil dikirim!');
     }

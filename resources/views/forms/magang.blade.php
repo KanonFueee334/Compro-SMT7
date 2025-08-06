@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Pengajuan Magang</title>
+    <title>{{ $formLink->title }}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
@@ -252,8 +252,10 @@
                         <div class="auth-logo mb-4">
                             <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
                         </div>
-                        <h1 class="auth-title">Form Pengajuan Magang</h1>
-                        <p class="auth-subtitle">Isi data di bawah dengan lengkap dan benar.</p>
+                        <h1 class="auth-title">{{ $formLink->title }}</h1>
+                        @if($formLink->description)
+                            <p class="auth-subtitle">{{ $formLink->description }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -280,6 +282,7 @@
 
                     <form method="POST" action="{{ route('pengajuan.store') }}">
                         @csrf
+                        <input type="hidden" name="form_link_id" value="{{ $formLink->id }}">
 
                         <div class="form-group">
                             <label class="form-label">Nama Pemohon</label>
@@ -379,7 +382,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
-                    </div>
+                                        </div>
                     <div class="col-md-5">
                         <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
                     </div>
@@ -399,4 +402,4 @@
     </script>
 </body>
 
-</html>
+</html> 

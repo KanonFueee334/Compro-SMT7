@@ -31,8 +31,65 @@
             <textarea name="keahlian" class="form-control">{{ old('keahlian', $pengajuan->keahlian) }}</textarea>
         </div>
         <div class="mb-3">
-            <label>Nama Anggota</label>
-            <textarea name="nama_anggota" class="form-control">{{ old('nama_anggota', $pengajuan->nama_anggota) }}</textarea>
+            <label>Anggota Kelompok</label>
+            <div id="anggota-container">
+                @php
+                    $anggotaList = [];
+                    if ($pengajuan->nama_anggota) {
+                        $anggotaArray = explode(';', $pengajuan->nama_anggota);
+                        foreach ($anggotaArray as $anggota) {
+                            $anggota = trim($anggota);
+                            if (preg_match('/^(.*?)\s*\(HP:\s*(.*?)\)$/', $anggota, $matches)) {
+                                $anggotaList[] = [
+                                    'nama' => trim($matches[1]),
+                                    'hp' => trim($matches[2])
+                                ];
+                            } else {
+                                $anggotaList[] = [
+                                    'nama' => $anggota,
+                                    'hp' => ''
+                                ];
+                            }
+                        }
+                    }
+                @endphp
+                
+                @if(count($anggotaList) > 0)
+                    @foreach($anggotaList as $index => $anggota)
+                        <div class="anggota-item mb-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" value="{{ $anggota['nama'] }}" required>
+                                </div>
+                                <div class="col-md-{{ $index == 0 ? '6' : '5' }}">
+                                    <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" value="{{ $anggota['hp'] }}" required>
+                                </div>
+                                @if($index > 0)
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAnggota(this)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="anggota-item mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addAnggota()">
+                <i class="bi bi-plus"></i> Tambah Anggota
+            </button>
         </div>
         <div class="mb-3">
             <label>Mulai Magang</label>
@@ -53,4 +110,32 @@
         <a href="{{ route('admin.penerimaan.daftar') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
+
+<script>
+    function addAnggota() {
+        const container = document.getElementById('anggota-container');
+        const newItem = document.createElement('div');
+        newItem.className = 'anggota-item mb-2';
+        newItem.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAnggota(this)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(newItem);
+    }
+
+    function removeAnggota(button) {
+        button.closest('.anggota-item').remove();
+    }
+</script>
 @endsection 

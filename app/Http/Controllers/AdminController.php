@@ -8,7 +8,7 @@ class AdminController extends Controller
 {
     public function home() { return view('admin.home'); }
     public function user() { return view('admin.user'); }
-    public function pengajuanLink() { return view('admin.pengajuan_link'); }
+    public function pengajuanLink() { return redirect()->route('admin.form_links.index'); }
     public function pengajuanDaftar() { return view('admin.pengajuan_daftar'); }
     public function penerimaanLink() { return view('admin.penerimaan_link'); }
     public function penerimaanDaftar() { return view('admin.penerimaan_daftar'); }

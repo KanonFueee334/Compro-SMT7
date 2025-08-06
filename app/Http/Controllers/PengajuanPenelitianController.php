@@ -27,6 +27,14 @@ class PengajuanPenelitianController extends Controller
             'ktp' => 'required|file|mimes:pdf,jpg,jpeg|max:1024', // 1MB
         ]);
 
+        // If form_link_id is provided, validate it exists and is active
+        if ($request->has('form_link_id')) {
+            $formLink = \App\Models\FormLink::find($request->form_link_id);
+            if (!$formLink || !$formLink->isActive()) {
+                return redirect()->back()->withErrors(['form_link' => 'Form link tidak valid atau sudah tidak aktif.']);
+            }
+        }
+
         $suratIzinPath = $request->file('surat_izin')->store('penelitian/surat_izin', 'public');
         $proposalPath = $request->file('proposal')->store('penelitian/proposal', 'public');
         $daftarPertanyaanPath = $request->file('daftar_pertanyaan')->store('penelitian/daftar_pertanyaan', 'public');

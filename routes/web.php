@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PengajuanMagangController;
 use App\Http\Controllers\PengajuanPenelitianController;
+use App\Http\Controllers\FormLinkController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -81,7 +82,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::delete('lokasi/{id}', [LokasiController::class, 'destroy'])->name('lokasi.destroy');
     });
 
-    Route::get('/pengajuan/link', [AdminController::class, 'pengajuanLink'])->name('pengajuan.link');
+    Route::get('/pengajuan/link', [FormLinkController::class, 'index'])->name('pengajuan.link');
+    Route::get('/form-links', [FormLinkController::class, 'index'])->name('form_links.index');
+    Route::get('/form-links/create', [FormLinkController::class, 'create'])->name('form_links.create');
+    Route::post('/form-links', [FormLinkController::class, 'store'])->name('form_links.store');
+    Route::delete('/form-links/{id}', [FormLinkController::class, 'destroy'])->name('form_links.destroy');
+    Route::post('/form-links/{id}/toggle-status', [FormLinkController::class, 'toggleStatus'])->name('form_links.toggle-status');
     Route::get('/pengajuan/daftar', [App\Http\Controllers\PengajuanMagangController::class, 'daftarPengajuan'])->name('pengajuan.daftar');
     Route::get('/penerimaan/link', [AdminController::class, 'penerimaanLink'])->name('penerimaan.link');
     Route::get('/penerimaan/daftar', [PengajuanMagangController::class, 'index'])->name('penerimaan.daftar');
@@ -112,3 +118,6 @@ Route::post('/pengajuan', [PengajuanMagangController::class, 'store'])->name('pe
 Route::get('/pengajuan-magang', [PengajuanMagangController::class, 'create'])->name('pengajuan.create');
 Route::get('/pengajuan-penelitian', [App\Http\Controllers\PengajuanPenelitianController::class, 'create'])->name('pengajuan.penelitian.create');
 Route::post('/pengajuan-penelitian', [App\Http\Controllers\PengajuanPenelitianController::class, 'store'])->name('pengajuan.penelitian.store');
+
+/* Form Links */
+Route::get('/form/{token}', [FormLinkController::class, 'show'])->name('form.show');
