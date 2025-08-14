@@ -18,18 +18,7 @@
     <h2>Daftar Pengajuan Magang</h2>
     <p class="text-muted mb-4">Kelola status pengajuan magang - aplikasi akan tetap di halaman ini sampai status 'Diterima'</p>
     
-    <!-- DEBUG INFO -->
-    @if(isset($debugInfo))
-        <div class="alert alert-info">
-            <h5>Debug Info:</h5>
-            <ul>
-                <li><strong>Total Applications in Database:</strong> {{ $debugInfo['total_applications'] }}</li>
-                <li><strong>Current Filter:</strong> {{ $debugInfo['filter_status'] }}</li>
-                <li><strong>Query Results:</strong> {{ $debugInfo['query_results_count'] }}</li>
-                <li><strong>All Statuses:</strong> {{ implode(', ', $debugInfo['all_statuses']) }}</li>
-            </ul>
-        </div>
-    @endif
+
     {{-- Card Kuota Lokasi --}}
     <div class="row mb-4">
         @foreach($kuota as $k)

@@ -42,4 +42,9 @@ class Penerimaan extends Model
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
+
+    public function hasilMagang()
+    {
+        return $this->hasOne(HasilMagang::class, 'penerimaan_id');
+    }
 }

@@ -42,7 +42,12 @@ class AuthController extends Controller
         if($user){
             if (Hash::check($password, $user['password'])) {
                 Auth::login($user);
-                return redirect()->intended('/be-home');
+                // Redirect based on user role
+                if ($user['role'] === 'admin') {
+                    return redirect()->intended('/admin/home');
+                } else {
+                    return redirect()->intended('/mg-home');
+                }
             } else {
                 session()->flash('error', 'Password salah');
                 return redirect()->back();

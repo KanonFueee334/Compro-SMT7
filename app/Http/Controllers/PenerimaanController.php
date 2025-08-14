@@ -91,6 +91,15 @@ class PenerimaanController extends Controller
 
         $penerimaan->update($data);
 
+        // Auto-approve if all required documents are present
+        if ($penerimaan->surat_penerimaan && 
+            $penerimaan->surat_pengantar_izin && 
+            $penerimaan->proposal_magang && 
+            $penerimaan->ktp_peserta) {
+            $penerimaan->status = 'approved';
+            $penerimaan->save();
+        }
+
         return redirect()->route('admin.penerimaan.index')->with('success', 'Data penerimaan berhasil diupdate.');
     }
 

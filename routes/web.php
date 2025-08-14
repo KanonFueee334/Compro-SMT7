@@ -100,7 +100,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/penerimaan/{id}/update-status', [App\Http\Controllers\PenerimaanController::class, 'updateStatus'])->name('penerimaan.update-status');
 
     Route::get('/pelaksanaan', [AdminController::class, 'pelaksanaan'])->name('pelaksanaan');
-    Route::get('/hasil', [AdminController::class, 'hasil'])->name('hasil');
+    Route::get('/hasil', [App\Http\Controllers\HasilMagangController::class, 'index'])->name('hasil');
+    Route::post('/hasil', [App\Http\Controllers\HasilMagangController::class, 'store'])->name('hasil.store');
+    Route::post('/hasil/{id}/upload-surat-keterangan', [App\Http\Controllers\HasilMagangController::class, 'uploadSuratKeterangan'])->name('hasil.upload-surat-keterangan');
+    Route::get('/hasil/{id}/download-laporan', [App\Http\Controllers\HasilMagangController::class, 'downloadLaporan'])->name('hasil.download-laporan');
+    Route::get('/hasil/{id}/download-surat-keterangan', [App\Http\Controllers\HasilMagangController::class, 'downloadSuratKeterangan'])->name('hasil.download-surat-keterangan');
+    Route::delete('/hasil/{id}', [App\Http\Controllers\HasilMagangController::class, 'destroy'])->name('hasil.destroy');
     // Penelitian routes
     Route::get('/penelitian/link', [PengajuanPenelitianController::class, 'generateLink'])->name('penelitian.link');
     Route::get('/penelitian', [PengajuanPenelitianController::class, 'index'])->name('penelitian.index');
@@ -111,7 +116,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('admin.home');
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.home');
+        } else {
+            return redirect()->route('mg.home');
+        }
     }
     return redirect()->route('login');
 });
