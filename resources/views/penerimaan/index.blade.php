@@ -47,6 +47,7 @@
                         <div class="modal-dialog">
                             <form method="POST" action="{{ route('admin.penerimaan.ubah-status', $p->id) }}" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="source_page" value="penerimaan">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="modalStatusLabel{{ $p->id }}">Ubah Status Pengajuan</h5>

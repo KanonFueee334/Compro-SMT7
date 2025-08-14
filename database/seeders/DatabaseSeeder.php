@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             PengajuanPenelitianSeeder::class,
             LokasiSeeder::class,
             PengajuanMagangSeeder::class,
+            PenerimaanSeeder::class,
         ]);
 
         // Tambahkan user magang jika belum ada

@@ -52,19 +52,25 @@ class PengajuanMagangController extends Controller
         return redirect()->route('admin.penerimaan.daftar')->with('success', 'Data pengajuan berhasil diupdate.');
     }
 
-    public function ubahStatus(Request $request, $id)
+
+
+    public function ubahStatusPengajuan(Request $request, $id)
     {
         $pengajuan = PengajuanMagang::findOrFail($id);
         $status = $request->input('status');
         $catatan = $request->input('catatan');
+        
+        // Update the record
         $pengajuan->status = $status;
         $pengajuan->catatan = $catatan;
-        // Jika diterima, buat akun user magang dan upload surat
+        $pengajuan->save();
+        
+        
         if ($status === 'diterima') {
-            // Cek jika user sudah ada
+            // Create user account if needed
             $user = User::where('username', $pengajuan->no_hp)->first();
             if (!$user) {
-                $user = User::create([
+                User::create([
                     'username' => $pengajuan->no_hp,
                     'password' => Hash::make('magang123'),
                     'name' => $pengajuan->nama_pemohon,
@@ -72,13 +78,40 @@ class PengajuanMagangController extends Controller
                     'status' => 1,
                 ]);
             }
-            if ($request->hasFile('file_surat')) {
-                $pengajuan->file_surat = $request->file('file_surat')->store('surat_penerimaan', 'public');
-            }
+            
+            // Automatically create penerimaan record
+            $this->createPenerimaanFromPengajuan($pengajuan);
         }
-        $pengajuan->save();
-        return redirect()->route('admin.penerimaan.daftar')->with('success', 'Status pengajuan berhasil diubah.');
+        
+        return redirect()->route('admin.pengajuan.daftar')
+            ->with('success', 'Status pengajuan berhasil diubah menjadi ' . ucfirst($status) . '.');
     }
+    
+    private function createPenerimaanFromPengajuan($pengajuan)
+    {
+        // Check if penerimaan already exists
+        $existingPenerimaan = \App\Models\Penerimaan::where('pengajuan_id', $pengajuan->id)->first();
+        
+        if (!$existingPenerimaan) {
+            \App\Models\Penerimaan::create([
+                'pengajuan_id' => $pengajuan->id,
+                'peserta_magang' => [
+                    [
+                        'nama' => $pengajuan->nama_pemohon,
+                        'telepon' => $pengajuan->no_hp
+                    ]
+                ],
+                'instansi_sekolah_universitas' => $pengajuan->asal_instansi ?? '',
+                'jurusan' => $pengajuan->jurusan ?? '',
+                'lokasi_id' => $pengajuan->lokasi_id,
+                'mulai_magang' => $pengajuan->mulai_magang ?? now()->addDays(30),
+                'selesai_magang' => $pengajuan->selesai_magang ?? now()->addDays(90),
+                'status' => 'pending'
+            ]);
+        }
+    }
+
+
 
     public function create()
     {
@@ -134,15 +167,26 @@ class PengajuanMagangController extends Controller
 
     public function daftarPengajuan(Request $request)
     {
-        $status = $request->get('status', 'pengajuan');
+        $status = $request->get('status', 'all');
         $query = PengajuanMagang::query();
+        
+        // DEBUG: Let's see what's actually in the database
+        $allApplications = PengajuanMagang::all();
+        \Log::info('All applications in database:', $allApplications->toArray());
+        
         // Hanya tampilkan pengajuan, diproses, ditolak
         if ($status !== 'all') {
             $query->where('status', $status);
         } else {
             $query->whereIn('status', ['pengajuan', 'diproses', 'ditolak']);
         }
+        
         $pengajuan = $query->orderBy('created_at', 'desc')->get();
+        
+        // DEBUG: Let's see what the query returns
+        \Log::info('Query status: ' . $status);
+        \Log::info('Query SQL: ' . $query->toSql());
+        \Log::info('Query results:', $pengajuan->toArray());
 
         // Hitung keterisian kuota lokasi berdasarkan anggota, hanya status 'diterima'
         $lokasi = \App\Models\Lokasi::all();
@@ -162,7 +206,15 @@ class PengajuanMagangController extends Controller
                 'terisi' => $terisi,
             ];
         }
-        return view('admin.pengajuan_daftar', compact('pengajuan', 'kuota', 'status'));
+        // DEBUG: Add debug info to the view
+        $debugInfo = [
+            'total_applications' => $allApplications->count(),
+            'filter_status' => $status,
+            'query_results_count' => $pengajuan->count(),
+            'all_statuses' => $allApplications->pluck('status')->toArray()
+        ];
+        
+        return view('admin.pengajuan_daftar', compact('pengajuan', 'kuota', 'status', 'debugInfo'));
     }
 
     public function destroy($id)

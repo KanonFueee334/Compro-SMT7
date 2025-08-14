@@ -87,12 +87,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/form-links/{id}', [FormLinkController::class, 'destroy'])->name('form_links.destroy');
     Route::post('/form-links/{id}/toggle-status', [FormLinkController::class, 'toggleStatus'])->name('form_links.toggle-status');
     Route::get('/pengajuan/daftar', [App\Http\Controllers\PengajuanMagangController::class, 'daftarPengajuan'])->name('pengajuan.daftar');
-    Route::get('/penerimaan/link', [AdminController::class, 'penerimaanLink'])->name('penerimaan.link');
-    Route::get('/penerimaan/daftar', [PengajuanMagangController::class, 'index'])->name('penerimaan.daftar');
-    Route::get('/penerimaan/{id}/edit', [PengajuanMagangController::class, 'edit'])->name('penerimaan.edit');
-    Route::put('/penerimaan/{id}', [PengajuanMagangController::class, 'update'])->name('penerimaan.update');
-    Route::post('/penerimaan/{id}/ubah-status', [PengajuanMagangController::class, 'ubahStatus'])->name('penerimaan.ubah-status');
-    Route::delete('/penerimaan/{id}', [PengajuanMagangController::class, 'destroy'])->name('penerimaan.destroy');
+    Route::post('/pengajuan/{id}/ubah-status', [PengajuanMagangController::class, 'ubahStatusPengajuan'])->name('pengajuan.ubah-status');
+    
+    // Penerimaan routes
+    Route::get('/penerimaan', [App\Http\Controllers\PenerimaanController::class, 'index'])->name('penerimaan.index');
+    Route::get('/penerimaan/create', [App\Http\Controllers\PenerimaanController::class, 'create'])->name('penerimaan.create');
+    Route::post('/penerimaan', [App\Http\Controllers\PenerimaanController::class, 'store'])->name('penerimaan.store');
+    Route::get('/penerimaan/{id}', [App\Http\Controllers\PenerimaanController::class, 'show'])->name('penerimaan.show');
+    Route::get('/penerimaan/{id}/edit', [App\Http\Controllers\PenerimaanController::class, 'edit'])->name('penerimaan.edit');
+    Route::put('/penerimaan/{id}', [App\Http\Controllers\PenerimaanController::class, 'update'])->name('penerimaan.update');
+    Route::delete('/penerimaan/{id}', [App\Http\Controllers\PenerimaanController::class, 'destroy'])->name('penerimaan.destroy');
+    Route::post('/penerimaan/{id}/update-status', [App\Http\Controllers\PenerimaanController::class, 'updateStatus'])->name('penerimaan.update-status');
+
     Route::get('/pelaksanaan', [AdminController::class, 'pelaksanaan'])->name('pelaksanaan');
     Route::get('/hasil', [AdminController::class, 'hasil'])->name('hasil');
     // Penelitian routes

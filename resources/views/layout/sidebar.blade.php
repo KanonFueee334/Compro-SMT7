@@ -74,20 +74,17 @@
                                     <li class="submenu-item"><a href="{{ route('admin.pengajuan.daftar') }}">Daftar Pengajuan</a></li>
                                 </ul>
                             </li>
-                            <li class="sidebar-item has-sub">
-                                <a href="#" class='sidebar-link'>
-                                    <i class="bi bi-check2-square"></i>
-                                    <span>Penerimaan Magang</span>
-                                </a>
-                                <ul class="submenu">
-                                    <li class="submenu-item"><a href="{{ route('admin.penerimaan.link') }}">Link Penerimaan</a></li>
-                                    <li class="submenu-item"><a href="{{ route('admin.penerimaan.daftar') }}">Daftar Penerimaan</a></li>
-                                </ul>
-                            </li>
+
                             <li class="sidebar-item">
                                 <a href="{{ route('admin.pelaksanaan') }}" class='sidebar-link'>
                                     <i class="bi bi-calendar-check"></i>
                                     <span>Pelaksanaan Magang</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{{ route('admin.penerimaan.index') }}" class='sidebar-link'>
+                                    <i class="bi bi-person-check"></i>
+                                    <span>Penerimaan Magang</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">

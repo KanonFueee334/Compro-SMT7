@@ -23,13 +23,15 @@
             min-height: 100vh;
         }
         
-        .auth-left {
+        .auth-header {
             background: linear-gradient(135deg, #385096 0%, #4a6bdf 100%);
             position: relative;
             overflow: hidden;
+            padding: 40px 0;
+            text-align: center;
         }
         
-        .auth-left::before {
+        .auth-header::before {
             content: '';
             position: absolute;
             top: 0;
@@ -43,11 +45,13 @@
         .auth-logo {
             position: relative;
             z-index: 2;
+            margin-bottom: 20px;
         }
         
         .auth-logo img {
             width: 80px;
             height: 80px;
+            object-fit: contain;
             filter: brightness(0) invert(1);
         }
         
@@ -74,8 +78,8 @@
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin: 20px;
-            max-width: 500px;
+            margin: 20px auto;
+            max-width: 600px;
         }
         
         .form-group {
@@ -237,31 +241,28 @@
             .auth-title {
                 font-size: 2rem;
             }
+            
+            .auth-header {
+                padding: 30px 0;
+            }
         }
     </style>
 </head>
 
 <body>
     <div id="auth">
-        <div class="row h-100">
-
-            <!-- Background biru kiri -->
-            <div class="col-lg-3 d-none d-lg-block auth-left">
-                <div class="d-flex align-items-center justify-content-center h-100">
-                    <div class="text-center">
-                        <div class="auth-logo mb-4">
-                            <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
-                        </div>
-                        <h1 class="auth-title">{{ $formLink->title }}</h1>
-                        @if($formLink->description)
-                            <p class="auth-subtitle">{{ $formLink->description }}</p>
-                        @endif
-                    </div>
+        <!-- Header Section -->
+        <div class="auth-header">
+            <div class="container">
+                <div class="auth-logo">
+                    <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
                 </div>
             </div>
+        </div>
 
-            <!-- Form Tengah -->
-            <div class="col-lg-6 col-12 d-flex align-items-center justify-content-center">
+        <!-- Form Section -->
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-center">
                 <div class="form-container">
                     @if(session('success'))
                         <div class="alert alert-success">
@@ -367,9 +368,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Background biru kanan -->
-            <div class="col-lg-3 d-none d-lg-block auth-left"></div>
         </div>
     </div>
 
@@ -382,7 +380,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
-                                        </div>
+                    </div>
                     <div class="col-md-5">
                         <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
                     </div>
