@@ -83,7 +83,8 @@
             </div>
             <div class="col-lg-7 d-none d-lg-block">
                 <div id="auth-right">
-
+                    <div class="d-flex justify-content-center align-items-center h-100 gap-3">
+                    </div>
                 </div>
             </div>
         </div>
