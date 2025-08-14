@@ -14,11 +14,8 @@
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     
-    @if(Route::is('be.um'))
+    @if(Route::is('mg.absen.history') || Route::is('mg.recap'))
         <link rel="stylesheet" href="{{ asset('vendors/simple-datatables/style.css') }}">
-    @elseif(Route::is('mg.absen.history') || Route::is('mg.recap'))
-        <link rel="stylesheet" href="{{ asset('vendors/simple-datatables/style.css') }}">
-    @else
     @endif
 </head>
 
@@ -42,15 +39,11 @@
                             <div class="col-12 col-md-6 order-md-2 order-first">
                                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                     <ol class="breadcrumb">
-                                        @if(!Route::is('be.home') && !Route::is('mg.home'))
-                                            <li class="breadcrumb-item"><a href="{{ route('be.home') }}">Beranda</a></li>
+                                        @if(!Route::is('mg.home'))
+                                            <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Beranda</a></li>
                                         @endif
 
-                                        @if(Route::is('be.um'))
-                                            <li class="breadcrumb-item active" aria-current="page">Pengguna</li>
-                                        @else
 
-                                        @endif
 
                                     </ol>
                                 </nav>
@@ -93,14 +86,7 @@
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('/js/main.js') }}"></script>
 
-    @if(Route::is('be.um'))
-        <script src="{{ asset('vendors/simple-datatables/simple-datatables.js') }}"></script>
-        <script>
-            // Simple Datatable
-            let table1 = document.querySelector('#user-table');
-            let dataTable = new simpleDatatables.DataTable(table1);
-        </script>
-    @elseif(Route::is('mg.absen.history') || Route::is('mg.recap'))
+    @if(Route::is('mg.absen.history') || Route::is('mg.recap'))
         <script src="{{ asset('vendors/simple-datatables/simple-datatables.js') }}"></script>
         <script>
             // Simple Datatable

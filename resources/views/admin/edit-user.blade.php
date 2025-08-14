@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Edit Pengguna')
+@section('title', 'Edit Pengguna - Master User')
 
 @section('content')
     <div class="card">
@@ -8,7 +8,7 @@
             <h4 class="card-title" style="margin: 0; padding: 0; font-size: 1.2rem; font-weight: 700;">Edit Pengguna</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('be.um.edit', $user->id) }}">
+            <form method="POST" action="{{ route('admin.master.user.edit', $user->id) }}">
                 @csrf
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
@@ -64,7 +64,7 @@
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="{{ route('be.um') }}" class="btn btn-secondary">Kembali</a>
+                <a href="{{ route('admin.master.user') }}" class="btn btn-secondary">Kembali</a>
             </form>
         </div>
     </div>

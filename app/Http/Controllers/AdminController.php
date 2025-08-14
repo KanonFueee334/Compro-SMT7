@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     public function home() { return view('admin.home'); }
-    public function user() { return view('admin.user'); }
+    public function user() { 
+        $users = User::select('id','name','status','role')
+            ->orderBy('status','desc')
+            ->orderBy('name','asc')
+            ->get();
+        return view('admin.user', ['users' => $users]); 
+    }
     public function pengajuanLink() { return redirect()->route('admin.form_links.index'); }
     public function pengajuanDaftar() { return view('admin.pengajuan_daftar'); }
     public function penerimaanLink() { return view('admin.penerimaan_link'); }

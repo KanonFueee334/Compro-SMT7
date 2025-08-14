@@ -7,13 +7,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index(){
-        $users = User::select('id','name','status','role')
-            ->orderBy('status','desc')
-            ->orderBy('name','asc')
-            ->get();
-        return view('user-management',['users'=>$users]);
-    }
+
 
     public function addUserSave(Request $request){
         if (auth()->user()->role !== 'admin') {
@@ -74,12 +68,17 @@ class UserController extends Controller
         
         // Flash a success message to the session
         session()->flash('success', 'Berhasil menambahkan pengguna baru.');
-        return redirect()->route('be.um');
+        return redirect()->route('admin.master.user');
     }
 
     public function editUserForm($id) {
         $user = User::findOrFail($id);
         return response()->json($user);
+    }
+
+    public function editUserPage($id) {
+        $user = User::findOrFail($id);
+        return view('admin.edit-user', ['user' => $user]);
     }
 
     public function editUserSave(Request $request, $id) {
@@ -140,13 +139,10 @@ class UserController extends Controller
         $user->save();
 
         session()->flash('success', 'Berhasil mengubah data pengguna.');
-        return redirect()->route('be.um');
+        return redirect()->route('admin.master.user');
     }
 
-    public function editUserPage($id) {
-        $user = User::findOrFail($id);
-        return view('edit-user', ['user' => $user]);
-    }
+
 
     public function deleteUser($id) {
         if (auth()->user()->role !== 'admin') {

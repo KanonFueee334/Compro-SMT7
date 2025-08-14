@@ -83,12 +83,7 @@
             </div>
             <div class="col-lg-7 d-none d-lg-block">
                 <div id="auth-right">
-                    <div id="auth-right">
-                        <div class="d-flex justify-content-center align-items-center h-100 gap-3">
-                            <a href="{{ route('pengajuan.create') }}" class="btn btn-outline-light btn-lg">Ajukan Magang</a>
-                            <a href="{{ route('pengajuan.penelitian.create') }}" class="btn btn-outline-warning btn-lg">Ajukan Penelitian</a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

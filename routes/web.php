@@ -27,7 +27,7 @@ use App\Http\Controllers\FormLinkController;
 Route::get('/login', function () { 
 
 	if(Auth::check()){
-		return redirect()->route('be.home');
+		return redirect()->route('admin.home');
 	}
 
 	return view('login'); 
@@ -39,15 +39,9 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /* ADMIN */
 
-Route::get('/be-home',function() { return view('home'); })->name('be.home')->middleware('auth');
 
-Route::get('/be-um',[UserController::class, 'index'])->name('be.um')->middleware('auth');
 
-Route::post('/be-um-add',[UserController::class, 'addUserSave'])->name('be.um.add')->middleware('auth');
 
-Route::post('/be-um-edit/{id}', [UserController::class, 'editUserSave'])->name('be.um.edit')->middleware('auth');
-Route::get('/be-um-edit-page/{id}', [UserController::class, 'editUserPage'])->name('be.um.edit.page')->middleware('auth');
-Route::post('/be-um-delete/{id}', [UserController::class, 'deleteUser'])->name('be.um.delete')->middleware('auth');
 
 /* MAGANG */
 
@@ -73,6 +67,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::prefix('master')->name('master.')->group(function () {
         Route::get('/user', [AdminController::class, 'user'])->name('user');
+                Route::post('/user/add', [UserController::class, 'addUserSave'])->name('user.add');
+        Route::post('/user/edit/{id}', [UserController::class, 'editUserSave'])->name('user.edit');
+        Route::get('/user/edit-page/{id}', [UserController::class, 'editUserPage'])->name('user.edit-page');
+        Route::post('/user/delete/{id}', [UserController::class, 'deleteUser'])->name('user.delete');
         
         Route::get('lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
         Route::get('lokasi/create', [LokasiController::class, 'create'])->name('lokasi.create');
@@ -107,7 +105,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('be.home');
+        return redirect()->route('admin.home');
     }
     return redirect()->route('login');
 });

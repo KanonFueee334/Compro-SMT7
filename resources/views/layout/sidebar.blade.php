@@ -12,19 +12,9 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        <li class="sidebar-item {{ Route::is('be.home') ? 'active' : '' }}">
-                            <a href="{{ route('be.home') }}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
-                                <span>Beranda</span>
-                            </a>
-                        </li>
 
-                        <li class="sidebar-item {{ Route::is('be.um') ? 'active' : '' }}">
-                            <a href="{{ route('be.um') }}" class='sidebar-link'>
-                                <i class="bi bi-person-circle"></i>
-                                <span>Pengguna</span>
-                            </a>
-                        </li>
+
+
 
                         <li class="sidebar-title">Magang</li>
 

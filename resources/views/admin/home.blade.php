@@ -1,5 +1,16 @@
 @extends('layout.app')
-@section('title', 'Admin Home')
+
+@section('title', 'Selamat Datang - Admin')
+
 @section('content')
-<div class="container"><h2>Admin Home</h2><p>This is the admin dashboard.</p></div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Office Dinkominfo</h4>
+            </div>
+            <div class="card-body">
+                Dinas Komunikasi dan Informatika
+            </div>
+        </div>
+    </section>
 @endsection 
