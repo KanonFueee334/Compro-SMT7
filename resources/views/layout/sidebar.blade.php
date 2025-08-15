@@ -70,7 +70,7 @@
                                     <span>Pengajuan Magang</span>
                                 </a>
                                 <ul class="submenu">
-                                    <li class="submenu-item"><a href="{{ route('admin.form_links.index') }}">Kelola Form Links</a></li>
+                                    <li class="submenu-item"><a href="{{ route('admin.form_links.index') }}">Kelola Form Link Magang</a></li>
                                     <li class="submenu-item"><a href="{{ route('admin.pengajuan.daftar') }}">Daftar Pengajuan</a></li>
                                 </ul>
                             </li>
@@ -81,6 +81,7 @@
                                     <span>Pelaksanaan Magang</span>
                                 </a>
                             </li>
+
                             <li class="sidebar-item">
                                 <a href="{{ route('admin.penerimaan.index') }}" class='sidebar-link'>
                                     <i class="bi bi-person-check"></i>
@@ -99,7 +100,7 @@
                                     <span>Penelitian</span>
                                 </a>
                                 <ul class="submenu">
-                                    <li class="submenu-item"><a href="{{ route('admin.penelitian.link') }}">Generate Link</a></li>
+                                    <li class="submenu-item"><a href="{{ route('admin.penelitian.link') }}">Kelola Form Link Penelitian</a></li>
                                     <li class="submenu-item"><a href="{{ route('admin.penelitian.index') }}">Daftar Penelitian</a></li>
                                 </ul>
                             </li>

@@ -121,9 +121,18 @@ class PenerimaanController extends Controller
             Storage::disk('public')->delete($penerimaan->surat_penerimaan);
         }
         
+        // Revert status pengajuan agar kuota berkurang di daftar pengajuan
+        if ($penerimaan->pengajuan_id) {
+            $pengajuan = PengajuanMagang::find($penerimaan->pengajuan_id);
+            if ($pengajuan) {
+                $pengajuan->status = 'pengajuan';
+                $pengajuan->save();
+            }
+        }
+
         $penerimaan->delete();
 
-        return redirect()->route('admin.penerimaan.index')->with('success', 'Data penerimaan berhasil dihapus.');
+        return redirect()->route('admin.penerimaan.index')->with('success', 'Data penerimaan berhasil dihapus dan kuota diperbarui.');
     }
 
     public function updateStatus(Request $request, $id)

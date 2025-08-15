@@ -4,30 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $formLink->title }}</title>
+    <title>Form Pengajuan Penelitian</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; min-height: 100vh; }
+        #auth { min-height: 100vh; }
+
+        .auth-header {
+            background: linear-gradient(135deg, #385096 0%, #4a6bdf 100%);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            overflow: hidden;
+            padding: 24px 0;
+            text-align: center;
+        }
+        .auth-header .auth-logo img { width: 80px; height: 80px; object-fit: contain; filter: brightness(0) invert(1); }
+
+        /* Sembunyikan judul/deskripsi form */
+        .auth-title, .auth-subtitle { display: none !important; }
+
+        .form-container { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px auto; max-width: 600px; width: 100%; }
+        .form-group { margin-bottom: 25px; }
+        .form-label, label { font-weight: 600; color: #2d3748; margin-bottom: 8px; display: block; font-size: 0.95rem; }
+        .form-control { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px 18px; font-size: 1rem; transition: all 0.3s ease; background: #f8fafc; }
+        .form-control:focus { border-color: #385096; box-shadow: 0 0 0 3px rgba(56,80,150,0.1); background: #fff; outline: none; }
+        .form-control::placeholder { color: #a0aec0; }
+        .form-select { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px 18px; font-size: 1rem; transition: all 0.3s ease; background: #f8fafc; }
+        .form-select:focus { border-color: #385096; box-shadow: 0 0 0 3px rgba(56,80,150,0.1); background: #fff; }
+        textarea.form-control { min-height: 100px; resize: vertical; }
+
+        .btn-primary { background: linear-gradient(135deg, #385096 0%, #4a6bdf 100%); border: none; border-radius: 12px; padding: 16px 32px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(56,80,150,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(56,80,150,0.4); }
+
+        .alert { border-radius: 12px; border: none; padding: 16px 20px; margin-bottom: 25px; }
+        .alert-success { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: #fff; }
+        .alert-danger { background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%); color: #fff; }
+        .alert ul { margin: 0; padding-left: 20px; }
+
+        @media (max-width: 768px) {
+            .form-container { margin: 10px; padding: 20px; }
+            .auth-header { padding: 18px 0; }
+        }
+    </style>
 </head>
 
 <body>
     <div id="auth">
         <div class="row h-100">
 
-            <!-- Background biru kiri -->
-            <div class="col-lg-3 d-none d-lg-block" style="background-color: #385096;"></div>
+            <!-- Header logo sticky -->
+            <div class="col-12">
+                <div class="auth-header">
+                    <div class="auth-logo text-center">
+                        <a href="#"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo"></a>
+                    </div>
+                </div>
+            </div>
 
             <!-- Form Tengah -->
-            <div class="col-lg-6 col-12 d-flex align-items-center justify-content-center">
-                <div class="auth-logo text-center mb-4">
-                    <a href="#"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo"></a>
-                </div>
-                <h1 class="auth-title text-center">{{ $formLink->title }}</h1>
-                @if($formLink->description)
-                    <p class="auth-subtitle text-center mb-4">{{ $formLink->description }}</p>
-                @endif
+            <div class="col-12 d-flex align-items-start justify-content-center mt-4">
+                <div class="form-container">
+                    <!-- judul & deskripsi disembunyikan via CSS -->
 
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
@@ -48,17 +91,17 @@
 
                     <div class="form-group mb-3">
                         <label>Nama Peneliti</label>
-                        <input type="text" name="nama" class="form-control" value="{{ old('nama') }}" required>
+                        <input type="text" name="nama" class="form-control only-letters" value="{{ old('nama') }}" required pattern="^[A-Za-zÀ-ÿ\s]+$" title="Hanya huruf dan spasi">
                     </div>
 
                     <div class="form-group mb-3">
                         <label>Instansi</label>
-                        <input type="text" name="instansi" class="form-control" value="{{ old('instansi') }}" required>
+                        <input type="text" name="instansi" class="form-control only-letters" value="{{ old('instansi') }}" required pattern="^[A-Za-zÀ-ÿ\s]+$" title="Hanya huruf dan spasi">
                     </div>
 
                     <div class="form-group mb-3">
                         <label>Jurusan</label>
-                        <input type="text" name="jurusan" class="form-control" value="{{ old('jurusan') }}" required>
+                        <input type="text" name="jurusan" class="form-control only-letters" value="{{ old('jurusan') }}" required pattern="^[A-Za-zÀ-ÿ\s]+$" title="Hanya huruf dan spasi">
                     </div>
 
                     <div class="form-group mb-3">
@@ -103,9 +146,6 @@
                     <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg">Ajukan Penelitian</button>
                 </form>
             </div>
-
-            <!-- Background biru kanan -->
-            <div class="col-lg-3 d-none d-lg-block" style="background-color: #385096;"></div>
         </div>
     </div>
 </body>

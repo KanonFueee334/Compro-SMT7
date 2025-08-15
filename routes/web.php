@@ -101,6 +101,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Peserta
     Route::get('/peserta', [AdminController::class, 'peserta'])->name('peserta');
+    Route::post('/pelaksanaan/{id}/selesai', [AdminController::class, 'selesaiMagang'])->name('pelaksanaan.selesai');
 
     Route::get('/pelaksanaan', [AdminController::class, 'pelaksanaan'])->name('pelaksanaan');
     Route::get('/hasil', [App\Http\Controllers\HasilMagangController::class, 'index'])->name('hasil');
@@ -111,6 +112,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/hasil/{id}', [App\Http\Controllers\HasilMagangController::class, 'destroy'])->name('hasil.destroy');
     // Penelitian routes
     Route::get('/penelitian/link', [PengajuanPenelitianController::class, 'generateLink'])->name('penelitian.link');
+    Route::get('/penelitian/create-link', [PengajuanPenelitianController::class, 'createFormLink'])->name('penelitian.create-link');
+    Route::post('/penelitian/store-link', [PengajuanPenelitianController::class, 'storeFormLink'])->name('penelitian.store-link');
+    Route::delete('/penelitian/destroy-link/{id}', [PengajuanPenelitianController::class, 'destroyFormLink'])->name('penelitian.destroy-link');
+    Route::post('/penelitian/toggle-status-link/{id}', [PengajuanPenelitianController::class, 'toggleStatusFormLink'])->name('penelitian.toggle-status-link');
     Route::get('/penelitian', [PengajuanPenelitianController::class, 'index'])->name('penelitian.index');
     Route::get('/penelitian/{id}', [PengajuanPenelitianController::class, 'show'])->name('penelitian.show');
     Route::post('/penelitian/{id}/update-status', [PengajuanPenelitianController::class, 'updateStatus'])->name('penelitian.update-status');

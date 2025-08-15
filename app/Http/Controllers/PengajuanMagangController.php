@@ -123,12 +123,12 @@ class PengajuanMagangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20',
+            'nama_pemohon' => ['required','string','max:255','regex:/^[A-Za-zÀ-ÿ\s]+$/'],
+            'no_hp' => ['required','string','max:20','regex:/^\d+$/'],
             'anggota_nama' => 'required|array|min:1',
-            'anggota_nama.*' => 'required|string|max:255',
+            'anggota_nama.*' => ['required','string','max:255','regex:/^[A-Za-zÀ-ÿ\s]+$/'],
             'anggota_hp' => 'required|array|min:1',
-            'anggota_hp.*' => 'required|string|max:20',
+            'anggota_hp.*' => ['required','string','max:20','regex:/^\d+$/'],
             'asal_instansi' => 'required|string',
             'jurusan' => 'required|string',
             'keahlian' => 'required|string',
@@ -194,11 +194,15 @@ class PengajuanMagangController extends Controller
         $lokasi = \App\Models\Lokasi::all();
         $kuota = [];
         foreach ($lokasi as $l) {
-            $terisi = PengajuanMagang::where('lokasi_id', $l->id)
-                ->where('status', 'diterima')
+            // Hitung berdasarkan record penerimaan agar sinkron saat dihapus dari penerimaan
+            $terisi = \App\Models\Penerimaan::where('lokasi_id', $l->id)
                 ->get()
-                ->sum(function($p) {
-                    return 1 + count(array_filter(array_map('trim', explode(';', $p->nama_anggota))));
+                ->sum(function($rec){
+                    // peserta_magang bertipe array; fallback 1 jika format lain
+                    if (is_array($rec->peserta_magang) && count($rec->peserta_magang) > 0) {
+                        return count($rec->peserta_magang);
+                    }
+                    return 1;
                 });
             $kuota[] = [
                 'id' => $l->id,

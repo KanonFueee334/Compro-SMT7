@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\PengajuanPenelitian;
+use App\Models\FormLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PengajuanPenelitianController extends Controller
 {
@@ -16,9 +18,9 @@ class PengajuanPenelitianController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'instansi' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
+            'nama' => ['required','string','max:255','regex:/^[A-Za-zÀ-ÿ\s]+$/'],
+            'instansi' => ['required','string','max:255','regex:/^[A-Za-zÀ-ÿ\s]+$/'],
+            'jurusan' => ['required','string','max:255','regex:/^[A-Za-zÀ-ÿ\s]+$/'],
             'judul_penelitian' => 'required|string|max:255',
             'metode' => 'required|in:Kuesioner,Wawancara,Lainnya',
             'surat_izin' => 'required|file|mimes:pdf|max:2048', // 2MB
@@ -147,7 +149,50 @@ class PengajuanPenelitianController extends Controller
 
     public function generateLink()
     {
-        $link = route('pengajuan.penelitian.create');
-        return view('admin.penelitian.link', compact('link'));
+        $formLinks = FormLink::where('form_type', 'penelitian')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('admin.penelitian.link', compact('formLinks'));
+    }
+
+    public function createFormLink()
+    {
+        return view('admin.penelitian.create_link');
+    }
+
+    public function storeFormLink(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'expires_at' => 'nullable|date|after:now',
+        ]);
+
+        FormLink::create([
+            'form_type' => 'penelitian', // Hanya untuk penelitian
+            'title' => $request->title,
+            'description' => $request->description,
+            'expires_at' => $request->expires_at,
+            'created_by' => Auth::id(),
+        ]);
+
+        return redirect()->route('admin.penelitian.link')->with('success', 'Form link penelitian berhasil dibuat!');
+    }
+
+    public function destroyFormLink($id)
+    {
+        $formLink = FormLink::where('form_type', 'penelitian')->findOrFail($id);
+        $formLink->delete();
+        
+        return redirect()->route('admin.penelitian.link')->with('success', 'Form link penelitian berhasil dihapus!');
+    }
+
+    public function toggleStatusFormLink($id)
+    {
+        $formLink = FormLink::where('form_type', 'penelitian')->findOrFail($id);
+        $formLink->is_active = !$formLink->is_active;
+        $formLink->save();
+        
+        return redirect()->route('admin.penelitian.link')->with('success', 'Status form link penelitian berhasil diubah!');
     }
 } 

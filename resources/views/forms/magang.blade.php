@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $formLink->title }}</title>
+    <title>Form Pengajuan Magang</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
@@ -25,9 +25,11 @@
         
         .auth-header {
             background: linear-gradient(135deg, #385096 0%, #4a6bdf 100%);
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             overflow: hidden;
-            padding: 40px 0;
+            padding: 24px 0;
             text-align: center;
         }
         
@@ -55,23 +57,8 @@
             filter: brightness(0) invert(1);
         }
         
-        .auth-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .auth-subtitle {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.9);
-            font-weight: 300;
-            position: relative;
-            z-index: 2;
-        }
+        /* Sembunyikan judul/deskripsi form */
+        .auth-title, .auth-subtitle { display: none !important; }
         
         .form-container {
             background: white;
@@ -238,12 +225,8 @@
                 padding: 20px;
             }
             
-            .auth-title {
-                font-size: 2rem;
-            }
-            
             .auth-header {
-                padding: 30px 0;
+                padding: 18px 0;
             }
         }
     </style>
@@ -287,12 +270,12 @@
 
                         <div class="form-group">
                             <label class="form-label">Nama Pemohon</label>
-                            <input type="text" name="nama_pemohon" class="form-control" placeholder="Masukkan nama lengkap" required>
+                            <input type="text" name="nama_pemohon" class="form-control only-letters" placeholder="Masukkan nama lengkap" required pattern="^[A-Za-zÀ-ÿ\s]+$" title="Hanya huruf dan spasi">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">No HP Pemohon</label>
-                            <input type="text" name="no_hp" class="form-control" placeholder="Contoh: 08123456789" required>
+                            <input type="text" name="no_hp" class="form-control only-digits" placeholder="Contoh: 08123456789" required pattern="^\d+$" title="Hanya angka">
                         </div>
 
                         <div class="form-group">
@@ -301,10 +284,10 @@
                                 <div class="anggota-item">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
+                                            <input type="text" name="anggota_nama[]" class="form-control only-letters" placeholder="Nama Anggota" required pattern="^[A-Za-zÀ-ÿ\s]+$" title="Hanya huruf dan spasi">
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
+                                            <input type="text" name="anggota_hp[]" class="form-control only-digits" placeholder="No HP Anggota" required pattern="^\d+$" title="Hanya angka">
                                         </div>
                                     </div>
                                 </div>
@@ -372,20 +355,20 @@
     </div>
 
     <script>
-        function addAnggota() {
+                function addAnggota() {
             const container = document.getElementById('anggota-container');
             const newItem = document.createElement('div');
             newItem.className = 'anggota-item';
             newItem.innerHTML = `
-                <div class="row">
+                <div class="row align-items-center g-2">
                     <div class="col-md-6">
-                        <input type="text" name="anggota_nama[]" class="form-control" placeholder="Nama Anggota" required>
+                        <input type="text" name="anggota_nama[]" class="form-control only-letters" placeholder="Nama Anggota" required pattern="^[A-Za-zÀ-ÿ\\s]+$" title="Hanya huruf dan spasi">
                     </div>
                     <div class="col-md-5">
-                        <input type="text" name="anggota_hp[]" class="form-control" placeholder="No HP Anggota" required>
+                        <input type="text" name="anggota_hp[]" class="form-control only-digits" placeholder="No HP Anggota" required pattern="^\\d+$" title="Hanya angka">
                     </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-outline-danger" onclick="removeAnggota(this)">
+                    <div class="col-md-1 d-grid">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAnggota(this)" title="Hapus anggota">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -397,6 +380,16 @@
         function removeAnggota(button) {
             button.closest('.anggota-item').remove();
         }
+
+        // Sanitasi input di sisi klien
+        document.addEventListener('input', function(e){
+            if(e.target.classList && e.target.classList.contains('only-letters')){
+                e.target.value = e.target.value.replace(/[^A-Za-zÀ-ÿ\s]/g,'');
+            }
+            if(e.target.classList && e.target.classList.contains('only-digits')){
+                e.target.value = e.target.value.replace(/[^\d]/g,'');
+            }
+        });
     </script>
 </body>
 

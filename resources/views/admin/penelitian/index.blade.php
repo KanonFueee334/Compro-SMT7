@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="{{ route('admin.penelitian.link') }}" class="btn btn-primary">
-                            <i class="bi bi-link-45deg"></i> Generate Link
+                            <i class="bi bi-link-45deg"></i> Kelola Form Link
                         </a>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>No</th>

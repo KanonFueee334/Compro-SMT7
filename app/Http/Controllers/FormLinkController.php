@@ -11,7 +11,9 @@ class FormLinkController extends Controller
 {
     public function index()
     {
-        $formLinks = FormLink::orderBy('created_at', 'desc')->get();
+        $formLinks = FormLink::where('form_type', 'magang')
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('admin.form_links.index', compact('formLinks'));
     }
 
@@ -23,21 +25,20 @@ class FormLinkController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'form_type' => 'required|in:magang,penelitian',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'expires_at' => 'nullable|date|after:now',
         ]);
 
         FormLink::create([
-            'form_type' => $request->form_type,
+            'form_type' => 'magang', // Hanya untuk magang
             'title' => $request->title,
             'description' => $request->description,
             'expires_at' => $request->expires_at,
             'created_by' => Auth::id(),
         ]);
 
-        return redirect()->route('admin.form_links.index')->with('success', 'Form link berhasil dibuat!');
+        return redirect()->route('admin.form_links.index')->with('success', 'Form link magang berhasil dibuat!');
     }
 
     public function show($token)
@@ -60,18 +61,18 @@ class FormLinkController extends Controller
 
     public function destroy($id)
     {
-        $formLink = FormLink::findOrFail($id);
+        $formLink = FormLink::where('form_type', 'magang')->findOrFail($id);
         $formLink->delete();
         
-        return redirect()->route('admin.form_links.index')->with('success', 'Form link berhasil dihapus!');
+        return redirect()->route('admin.form_links.index')->with('success', 'Form link magang berhasil dihapus!');
     }
 
     public function toggleStatus($id)
     {
-        $formLink = FormLink::findOrFail($id);
+        $formLink = FormLink::where('form_type', 'magang')->findOrFail($id);
         $formLink->is_active = !$formLink->is_active;
         $formLink->save();
         
-        return redirect()->route('admin.form_links.index')->with('success', 'Status form link berhasil diubah!');
+        return redirect()->route('admin.form_links.index')->with('success', 'Status form link magang berhasil diubah!');
     }
 }
