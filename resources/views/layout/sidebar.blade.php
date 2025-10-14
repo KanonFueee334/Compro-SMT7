@@ -3,7 +3,7 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo" srcset=""></a>
+                            <a href="{{ Auth::check() && Auth::user()->role === 'admin' ? route('admin.home') : route('mg.home') }}"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo" style="width: 150px !important; height: auto !important; max-width: none !important;" srcset=""></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -443,26 +443,6 @@
 
                         <li class="sidebar-title">Raise Support</li>
 
-                        <li class="sidebar-item  ">
-                            <a href="https://zuramai.github.io/mazer/docs" class='sidebar-link'>
-                                <i class="bi bi-life-preserver"></i>
-                                <span>Documentation</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item  ">
-                            <a href="https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md" class='sidebar-link'>
-                                <i class="bi bi-puzzle"></i>
-                                <span>Contribute</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item  ">
-                            <a href="https://github.com/zuramai/mazer#donate" class='sidebar-link'>
-                                <i class="bi bi-cash"></i>
-                                <span>Donate</span>
-                            </a>
-                        </li>
  -->
                     </ul>
                 </div>

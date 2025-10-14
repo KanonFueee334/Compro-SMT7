@@ -267,7 +267,7 @@
         <div class="auth-header">
             <div class="container">
                 <div class="auth-logo">
-                    <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
+                    <a href="{{ route('mg.home') }}"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo" style="width: 120px; height: auto;"></a>
                 </div>
                 <h3 class="text-white mb-0">Form Penerimaan Magang</h3>
             </div>

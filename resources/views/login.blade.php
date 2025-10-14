@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pages/auth.css') }}">
+    
+    <style>
+        .auth-logo img {
+            width: 120px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+    </style>
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -23,7 +31,7 @@
             <div class="col-lg-5 col-12">
                 <div id="auth-left">
                     <div class="auth-logo">
-                        <a href="index.html"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo"></a>
+                        <a href="/"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo"></a>
                     </div>
                     <h1 class="auth-title">Log in</h1>
                     <p class="auth-subtitle mb-5">Log in dengan username dan password anda.</p>

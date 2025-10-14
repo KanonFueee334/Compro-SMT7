@@ -250,7 +250,7 @@
                 <div class="d-flex align-items-center justify-content-center h-100">
                     <div class="text-center">
                         <div class="auth-logo mb-4">
-                            <img src="{{ asset('images/logo/logo.png') }}" alt="Logo">
+                            <a href="{{ route('mg.home') }}"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo" style="width: 120px; height: auto;"></a>
                         </div>
                         <h1 class="auth-title">Form Pengajuan Magang</h1>
                         <p class="auth-subtitle">Isi data di bawah dengan lengkap dan benar.</p>

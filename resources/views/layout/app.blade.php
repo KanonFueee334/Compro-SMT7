@@ -14,6 +14,39 @@
     <link rel="stylesheet" href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     
+    <style>
+        #sidebar .sidebar-wrapper .sidebar-header .logo img {
+            width: 150px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+        
+        .sidebar .logo img {
+            width: 150px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+        
+        .logo img {
+            width: 150px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+        
+        /* Additional specific selectors */
+        .sidebar-header .logo a img {
+            width: 150px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+        
+        .d-flex .logo img {
+            width: 150px !important;
+            height: auto !important;
+            max-width: none !important;
+        }
+    </style>
+    
     @if(Route::is('mg.absen.history') || Route::is('mg.recap'))
         <link rel="stylesheet" href="{{ asset('vendors/simple-datatables/style.css') }}">
     @endif
@@ -102,6 +135,39 @@
             let dataTable = new simpleDatatables.DataTable(table1);
         </script>
     @else
+        <script>
+            (function(){
+                const ctx = document.getElementById('server-time-context');
+                if(!ctx) return;
+                const serverOffset = ctx.getAttribute('data-tz') || '+07:00';
+                const today = ctx.getAttribute('data-today');
+
+                function toLocal(dateStr, timeStr){
+                    // Expect dateStr: YYYY-MM-DD, timeStr: HH:mm:ss (server tz)
+                    const iso = `${dateStr}T${timeStr}${serverOffset}`; // e.g., 2025-10-06T13:20:49+07:00
+                    const d = new Date(iso);
+                    // Format as HH:mm:ss in user's locale
+                    const pad = n => String(n).padStart(2,'0');
+                    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                }
+
+                // Today cards
+                document.querySelectorAll('.localize-time-today').forEach(el=>{
+                    const t = el.getAttribute('data-time');
+                    const d = el.getAttribute('data-date') || today;
+                    if(!t) return;
+                    el.textContent = toLocal(d, t);
+                });
+
+                // History table rows
+                document.querySelectorAll('.localize-time-row').forEach(el=>{
+                    const t = el.getAttribute('data-time');
+                    const d = el.getAttribute('data-date');
+                    if(!t || !d) return;
+                    el.textContent = toLocal(d, t);
+                });
+            })();
+        </script>
     @endif
 </body>
 

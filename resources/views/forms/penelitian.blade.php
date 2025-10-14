@@ -62,7 +62,7 @@
             <div class="col-12">
                 <div class="auth-header">
                     <div class="auth-logo text-center">
-                        <a href="#"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo"></a>
+                        <a href="{{ route('mg.home') }}"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo" style="width: 120px; height: auto;"></a>
                     </div>
                 </div>
             </div>

@@ -23,7 +23,7 @@
             <div class="col-lg-6 col-12 d-flex align-items-center justify-content-center">
                 <div id="auth-left" class="w-100 px-4 py-5">
                     <div class="auth-logo text-center mb-4">
-                        <a href="#"><img src="{{ asset('images/logo/logo.png') }}" alt="Logo"></a>
+                        <a href="{{ route('mg.home') }}"><img src="{{ asset('images/logo/komdigi-logo.png') }}" alt="Logo" style="width: 120px; height: auto;"></a>
                     </div>
                     <h1 class="auth-title text-center">Form Pengajuan Penelitian</h1>
                     <p class="auth-subtitle text-center mb-4">Isi data di bawah dengan lengkap dan benar.</p>

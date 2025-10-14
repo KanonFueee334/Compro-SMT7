@@ -9,6 +9,9 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, DD MMMM YYYY') }}</h4>
+                        <span id="server-time-context" style="display:none"
+                              data-tz="+07:00"
+                              data-today="{{ \Carbon\Carbon::now('Asia/Jakarta')->format('Y-m-d') }}"></span>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-secondary text-center">
@@ -57,7 +60,9 @@
                                     </td>
                                     <td>
                                         @if($absensiToday && $absensiToday->masuk)
-                                            {{ $absensiToday->masuk }}
+                                            <span class="localize-time-today"
+                                                  data-date="{{ (isset($absensiToday->tgl) && $absensiToday->tgl) ? \Carbon\Carbon::createFromFormat('d-m-Y', $absensiToday->tgl)->format('Y-m-d') : \Carbon\Carbon::now('Asia/Jakarta')->format('Y-m-d') }}"
+                                                  data-time="{{ $absensiToday->masuk }}">{{ $absensiToday->masuk }}</span>
                                         @else
                                             --
                                         @endif
@@ -73,7 +78,9 @@
                                     </td>
                                     <td>
                                         @if($absensiToday && $absensiToday->pulang)
-                                            {{ $absensiToday->pulang }}
+                                            <span class="localize-time-today"
+                                                  data-date="{{ (isset($absensiToday->tgl) && $absensiToday->tgl) ? \Carbon\Carbon::createFromFormat('d-m-Y', $absensiToday->tgl)->format('Y-m-d') : \Carbon\Carbon::now('Asia/Jakarta')->format('Y-m-d') }}"
+                                                  data-time="{{ $absensiToday->pulang }}">{{ $absensiToday->pulang }}</span>
                                         @else
                                             --
                                         @endif
@@ -104,7 +111,11 @@
                                    <tr>
                                     <td>{{ $i+1 }}</td>
                                     <td>{{ $absenList[$i]->tgl }}</td>
-                                    <td>{{ $absenList[$i]->waktu }}</td>
+                                    <td>
+                                        <span class="localize-time-row"
+                                              data-date="{{ \Carbon\Carbon::createFromFormat('d-m-Y', $absenList[$i]->tgl)->format('Y-m-d') }}"
+                                              data-time="{{ $absenList[$i]->waktu }}">{{ $absenList[$i]->waktu }}</span>
+                                    </td>
                                 </tr>
                                 @endfor
                             </tbody>
