@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Skip on SQLite (testing) since ALTER ... MODIFY is MySQL-specific
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
         // Gunakan ALTER langsung agar tidak perlu doctrine/dbal
         if (Schema::hasTable('pengajuan_magang')) {
             if (Schema::hasColumn('pengajuan_magang', 'email')) {

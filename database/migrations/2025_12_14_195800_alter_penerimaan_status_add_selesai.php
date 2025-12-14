@@ -10,6 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip on SQLite (testing) since ALTER ... MODIFY/ENUM is MySQL-specific
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
         // Add 'selesai' to enum list for penerimaan.status
         DB::statement("ALTER TABLE `penerimaan` MODIFY `status` ENUM('pending','approved','rejected','selesai') NOT NULL DEFAULT 'pending'");
     }
@@ -19,6 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Skip on SQLite
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
         // Revert to original enum without 'selesai'
         DB::statement("ALTER TABLE `penerimaan` MODIFY `status` ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending'");
     }
