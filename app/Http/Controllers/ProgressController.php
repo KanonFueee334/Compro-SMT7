@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Progress;
 
 class ProgressController extends Controller
@@ -87,10 +88,9 @@ class ProgressController extends Controller
             abort(404);
         }
         
-        // Delete file from storage
-        $filePath = storage_path('app/public/' . $progress->file_path);
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        // Delete file from storage (compatible with Storage::fake in tests)
+        if (!empty($progress->file_path)) {
+            Storage::disk('public')->delete($progress->file_path);
         }
         
         // Delete from database
