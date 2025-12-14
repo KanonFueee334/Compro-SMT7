@@ -24,8 +24,63 @@ class PenerimaanController extends Controller
 
     public function store(Request $request)
     {
-        // Redirect to index since we don't need store method
-        return redirect()->route('admin.penerimaan.index');
+        $request->validate([
+            'pengajuan_id' => 'required|exists:pengajuan_magang,id',
+            'peserta_nama' => 'required|array|min:1',
+            'peserta_nama.*' => ['required','string','max:255'],
+            'peserta_telepon' => 'required|array|min:1',
+            'peserta_telepon.*' => ['required','string','max:20'],
+            'instansi' => 'required|string',
+            'jurusan' => 'required|string',
+            'lokasi_id' => 'required|exists:lokasi,id',
+            'mulai_magang' => 'required|date',
+            'selesai_magang' => 'required|date|after_or_equal:mulai_magang',
+            'surat_pengantar' => 'required|file|mimes:pdf|max:2048',
+            'proposal_magang' => 'required|file|mimes:pdf|max:5120',
+            'ktp_peserta' => 'required|file|mimes:pdf|max:5120',
+        ]);
+
+        // Build peserta array
+        $pesertaMagang = [];
+        $names = $request->input('peserta_nama', []);
+        $phones = $request->input('peserta_telepon', []);
+        for ($i = 0; $i < count($names); $i++) {
+            if (!empty($names[$i]) && !empty($phones[$i])) {
+                $pesertaMagang[] = [
+                    'nama' => $names[$i],
+                    'telepon' => $phones[$i],
+                ];
+            }
+        }
+
+        // Store files
+        $suratPengantarPath = $request->file('surat_pengantar')->store('penerimaan/surat_pengantar', 'public');
+        $proposalMagangPath = $request->file('proposal_magang')->store('penerimaan/proposal_magang', 'public');
+        $ktpPesertaPath = $request->file('ktp_peserta')->store('penerimaan/ktp_peserta', 'public');
+
+        // Create Penerimaan
+        $penerimaan = Penerimaan::create([
+            'pengajuan_id' => $request->pengajuan_id,
+            'peserta_magang' => $pesertaMagang,
+            'instansi_sekolah_universitas' => $request->instansi,
+            'jurusan' => $request->jurusan,
+            'lokasi_id' => $request->lokasi_id,
+            'mulai_magang' => $request->mulai_magang,
+            'selesai_magang' => $request->selesai_magang,
+            'surat_pengantar_izin' => $suratPengantarPath,
+            'proposal_magang' => $proposalMagangPath,
+            'ktp_peserta' => $ktpPesertaPath,
+            'status' => 'pending',
+        ]);
+
+        // Update pengajuan status
+        $pengajuan = PengajuanMagang::find($request->pengajuan_id);
+        if ($pengajuan) {
+            $pengajuan->status = 'diterima';
+            $pengajuan->save();
+        }
+
+        return redirect()->route('admin.penerimaan.index')->with('success', 'Data penerimaan berhasil dibuat.');
     }
 
     public function show($id)
