@@ -126,11 +126,18 @@ class HasilMagangController extends Controller
     {
         $user = Auth::user();
         
-        // Find penerimaan record by matching user's phone number with pengajuan data
-        $penerimaan = Penerimaan::whereHas('pengajuan', function($query) use ($user) {
-            $query->where('no_hp', $user->phone)
-                  ->orWhere('nama_pemohon', $user->name);
-        })->with(['pengajuan', 'lokasi', 'hasilMagang'])->first();
+        // Find penerimaan record by matching user with pengajuan or peserta_magang (JSON)
+        $penerimaan = Penerimaan::where(function($q) use ($user) {
+                $q->whereHas('pengajuan', function($query) use ($user) {
+                    $query->where('no_hp', $user->phone)
+                          ->orWhere('nama_pemohon', $user->name);
+                })
+                // Match inside peserta_magang JSON by phone or name (any occurrence)
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->phone])
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->name]);
+            })
+            ->with(['pengajuan', 'lokasi', 'hasilMagang'])
+            ->first();
 
         if (!$penerimaan) {
             return view('magang.hasil-magang', compact('penerimaan'))
@@ -144,11 +151,16 @@ class HasilMagangController extends Controller
     {
         $user = Auth::user();
         
-        // Get penerimaan record for this user
-        $penerimaan = Penerimaan::whereHas('pengajuan', function($query) use ($user) {
-            $query->where('no_hp', $user->phone)
-                  ->orWhere('nama_pemohon', $user->name);
-        })->first();
+        // Get penerimaan record for this user (match pengajuan or peserta_magang JSON)
+        $penerimaan = Penerimaan::where(function($q) use ($user) {
+                $q->whereHas('pengajuan', function($query) use ($user) {
+                    $query->where('no_hp', $user->phone)
+                          ->orWhere('nama_pemohon', $user->name);
+                })
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->phone])
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->name]);
+            })
+            ->first();
 
         if (!$penerimaan) {
             return back()->with('error', 'Anda belum memiliki data penerimaan magang.');
@@ -185,11 +197,17 @@ class HasilMagangController extends Controller
     {
         $user = Auth::user();
         
-        // Get penerimaan record for this user
-        $penerimaan = Penerimaan::whereHas('pengajuan', function($query) use ($user) {
-            $query->where('no_hp', $user->phone)
-                  ->orWhere('nama_pemohon', $user->name);
-        })->with('hasilMagang')->first();
+        // Get penerimaan record for this user (match pengajuan or peserta_magang JSON)
+        $penerimaan = Penerimaan::where(function($q) use ($user) {
+                $q->whereHas('pengajuan', function($query) use ($user) {
+                    $query->where('no_hp', $user->phone)
+                          ->orWhere('nama_pemohon', $user->name);
+                })
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->phone])
+                ->orWhereRaw("JSON_SEARCH(peserta_magang, 'one', ?) IS NOT NULL", [$user->name]);
+            })
+            ->with('hasilMagang')
+            ->first();
 
         if (!$penerimaan || !$penerimaan->hasilMagang) {
             return back()->with('error', 'Anda belum mengupload laporan hasil magang.');
