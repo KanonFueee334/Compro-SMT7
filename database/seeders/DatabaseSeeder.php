@@ -13,26 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Jalankan seeder lainnya
-        $this->call([
-            AdminSeeder::class,
-            PengajuanPenelitianSeeder::class,
-            LokasiSeeder::class,
-            PengajuanMagangSeeder::class,
-            PenerimaanSeeder::class,
-            HasilMagangSeeder::class,
-        ]);
-
-        // Tambahkan user magang jika belum ada
-        if (!User::where('username', 'kanonfueee')->exists()) {
+        // Seed default admin user only
+        if (!User::where('username', 'admin')->exists()) {
             User::create([
-                'username' => 'kanonfueee',
-                'password' => Hash::make('hyperbeam123'),
-                'name' => 'Kanon Fueee',
-                'role' => 'magang',
-                'status' => 1
+                'username' => 'admin',
+                'password' => Hash::make('admin123'),
+                'name' => 'Admin',
+                'role' => 'admin',
+                'status' => 1,
             ]);
         }
-
     }
 }
